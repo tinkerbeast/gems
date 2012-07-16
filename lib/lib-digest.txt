@@ -1,0 +1,48 @@
+# Libraries
+
+## Core
+bootstrap, 2.0.4
+jquery, 1.7.2.min
+
+## Library addons
+
+bootstrap-ico, ???
+bootstrap-js, ???
+
+# Files
+
+lib/lib-digest.txt
+lib/jquery
+lib/jquery/js
+lib/jquery/js/jquery.js -> lib/jquery/js/jquery-1.7.2.min.js
+lib/jquery/js/jquery-1.7.2.min.js
+lib/bootstrap
+lib/bootstrap/css
+lib/bootstrap/css/bootstrap-responsive.min.css
+lib/bootstrap/css/bootstrap.css
+lib/bootstrap/css/bootstrap.min.css
+lib/bootstrap/css/bootstrap-responsive.css
+lib/bootstrap/img
+lib/bootstrap/img/glyphicons-halflings.png
+lib/bootstrap/img/glyphicons-halflings-white.png
+lib/bootstrap/ico
+lib/bootstrap/ico/apple-touch-icon-72-precomposed.png
+lib/bootstrap/ico/apple-touch-icon-144-precomposed.png
+lib/bootstrap/ico/apple-touch-icon-114-precomposed.png
+lib/bootstrap/ico/apple-touch-icon-57-precomposed.png
+lib/bootstrap/ico/favicon.ico
+lib/bootstrap/js
+lib/bootstrap/js/bootstrap-transition.js
+lib/bootstrap/js/bootstrap-dropdown.js
+lib/bootstrap/js/bootstrap-collapse.js
+lib/bootstrap/js/bootstrap-carousel.js
+lib/bootstrap/js/bootstrap-typeahead.js
+lib/bootstrap/js/bootstrap-button.js
+lib/bootstrap/js/bootstrap-alert.js
+lib/bootstrap/js/bootstrap.min.js
+lib/bootstrap/js/bootstrap-tooltip.js
+lib/bootstrap/js/bootstrap-modal.js
+lib/bootstrap/js/bootstrap.js
+lib/bootstrap/js/bootstrap-popover.js
+lib/bootstrap/js/bootstrap-scrollspy.js
+lib/bootstrap/js/bootstrap-tab.js

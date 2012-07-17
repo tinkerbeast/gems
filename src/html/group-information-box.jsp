@@ -25,7 +25,7 @@
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
 
-            
+
             /* WARNING - static height */
             .gems-groupInfoBox {
                 height: 350px;
@@ -33,13 +33,17 @@
             .gems-groupInfoBox button.gems-btn-add {
                 float: right;
             }
-            
+
             /* ERROR  - static width */
             fieldset.gems-partyInformation select {
                 width: 170px
             }
             fieldset.gems-partyInformation input {
                 width: 150px;                
+            }
+
+            .gems-display-none {
+                display: none;
             }
 
 
@@ -91,7 +95,7 @@
             <div class="row">
                 <div class="span5">
 
-                    <div class="gems-groupInfoBox well">
+                    <div class="gems-groupInfoBox well" id="borrower">
                         <fieldset>
 
                             <legend>                            
@@ -99,16 +103,6 @@
                                 <span class="gems-groupInfoBox-sum"></span>
                                 <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
                             </legend>
-
-                            <fieldset class="gems-partyInformation">
-                                <select list="userList" required="true"></select>
-                                <!-- dynamicall add the data-list to these elect boxes -->
-                                <input type="number" required="true"/>
-                                <button class="close">&times;</button>
-                            </fieldset>
-
-
-
 
 
                         </fieldset>
@@ -125,9 +119,8 @@
 
                             <legend>                            
                                 Lender                                                   
-                                <button class="btn gems-btn-add" href="#" n><i class="icon-plus"></i></button>
+                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
                             </legend>
-
 
 
 
@@ -144,10 +137,12 @@
         <!-- Model elements
         ================================================== -->
         <datalist id="userList">
-            <option value="Homer Simpson">
-            <option value="Bart">
-            <option value="Fred Flinstone">
+            <option value="Homer Simpson">Homer Simpson</option>
+            <option value="Bart">Bart</option>
+            <option value="Fred Flinstone">Fred Flinstone</option>
         </datalist>
+
+
 
 
         <!-- Controller elements
@@ -168,6 +163,59 @@
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-typeahead.js"></script>
 
         <script type="text/javascript">
+            
+            
+
+            function PartyInformation () {
+                this.element = null;                
+            };
+            
+            PartyInformation.prototype.onClose  = function() {
+                // NOTE: `this` here will refere to the button element whre the function is binded
+                var fieldset = this.parentNode;
+                fieldset.parentNode.removeChild(fieldset); /* WARNING - DOM method used */
+            };
+            
+            /**
+             * Generates a form element of the following format
+             * 
+                <fieldset class="gems-partyInformation">
+                    <select required="true"></select>
+                    <input type="number" required="true"/>
+                    <button class="close" >&times;</button>
+                </fieldset>
+             */
+            PartyInformation.prototype.createPartyInfo = function(closeFunction) {
+                var partyInfoElement = jQuery('<fieldset/>').addClass('gems-partyInformation');
+                var partyInfoSelect =  jQuery('<select/>', {
+                    required : true 
+                }).append($('#userList').children());
+                var partyInfoInput =  jQuery('<input/>', {
+                    type: "number",
+                    required : true 
+                });
+                // ERROR - Workaround since &cross; could not go in text
+                var partyInfoClose =  jQuery('<button/>', {
+                    text: "×"
+                }).addClass('close').click(closeFunction);
+                partyInfoElement.append(partyInfoSelect).append(" ").append(partyInfoInput).append(partyInfoClose);
+            
+                return partyInfoElement;
+            };
+            
+            PartyInformation.prototype.getHtmlElement = function() {
+                if(this.element==null) {                    
+                    this.element = this.createPartyInfo(this.onClose);
+                }
+                return this.element;
+            };
+
+            //var pinf = new PartyInformation();            
+            //$('#borrower').append(pinf.getHtmlElement());
+            
+            var field = jQuery(fieldHtml);
+            field.children("selct").append($('#userList').children());
+            
           
         </script>
 

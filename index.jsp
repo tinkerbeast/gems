@@ -4,7 +4,12 @@
     Author     : rishin.goswami
 --%>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%><!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+String SITE_ROOT = "http://localhost:8084/gems/";
+%>
+
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -14,13 +19,13 @@
         <meta name="author" content="">
 
         <!-- Le styles -->
-        <link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap.css" rel="stylesheet">
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
         </style>
-        <link href="lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -49,6 +54,8 @@
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li class="active"><a href="#">Home</a></li>
+                            <li><a href="<%=SITE_ROOT%>src/html/group-information-box.jsp">Transaction</a></li>
+                            <li><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                         </ul>
@@ -67,19 +74,19 @@
         <!-- Le javascript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="lib/jquery/js/jquery.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-transition.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-alert.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-modal.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-dropdown.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-scrollspy.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-tab.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-tooltip.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-popover.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-button.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-collapse.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-carousel.js"></script>
-        <script src="lib/bootstrap/js/bootstrap-typeahead.js"></script>
+        <script src="<%=SITE_ROOT%>lib/jquery/js/jquery.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-transition.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-alert.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-modal.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-dropdown.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-scrollspy.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-tab.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-tooltip.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-popover.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-button.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-collapse.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-carousel.js"></script>
+        <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-typeahead.js"></script>
 
     </body>
 </html>

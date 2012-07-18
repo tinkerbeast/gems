@@ -161,60 +161,16 @@
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-collapse.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-carousel.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-typeahead.js"></script>
+        
+        <script src="<%=SITE_ROOT%>src/js/transaction-unit-factory.js"></script>
 
         <script type="text/javascript">
             
-            
 
-            function PartyInformation () {
-                this.element = null;                
-            };
-            
-            PartyInformation.prototype.onClose  = function() {
-                // NOTE: `this` here will refere to the button element whre the function is binded
-                var fieldset = this.parentNode;
-                fieldset.parentNode.removeChild(fieldset); /* WARNING - DOM method used */
-            };
-            
-            /**
-             * Generates a form element of the following format
-             * 
-                <fieldset class="gems-partyInformation">
-                    <select required="true"></select>
-                    <input type="number" required="true"/>
-                    <button class="close" >&times;</button>
-                </fieldset>
-             */
-            PartyInformation.prototype.createPartyInfo = function(closeFunction) {
-                var partyInfoElement = jQuery('<fieldset/>').addClass('gems-partyInformation');
-                var partyInfoSelect =  jQuery('<select/>', {
-                    required : true 
-                }).append($('#userList').children());
-                var partyInfoInput =  jQuery('<input/>', {
-                    type: "number",
-                    required : true 
-                });
-                // ERROR - Workaround since &cross; could not go in text
-                var partyInfoClose =  jQuery('<button/>', {
-                    text: "×"
-                }).addClass('close').click(closeFunction);
-                partyInfoElement.append(partyInfoSelect).append(" ").append(partyInfoInput).append(partyInfoClose);
-            
-                return partyInfoElement;
-            };
-            
-            PartyInformation.prototype.getHtmlElement = function() {
-                if(this.element==null) {                    
-                    this.element = this.createPartyInfo(this.onClose);
-                }
-                return this.element;
-            };
-
-            //var pinf = new PartyInformation();            
-            //$('#borrower').append(pinf.getHtmlElement());
-            
-            var field = jQuery(fieldHtml);
-            field.children("selct").append($('#userList').children());
+            //var pinf = new PartyInformation();
+            //alert(pinf.getHtmlElement());
+            TransactionUnitFactory.initialise($('#userList'));
+            $('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
             
           
         </script>

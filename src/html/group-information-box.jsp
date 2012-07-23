@@ -27,23 +27,19 @@
 
 
             /* WARNING - static height */
-            .gems-groupInfoBox {
+            .gems-transactionCategory {
                 height: 350px;
             }
-            .gems-groupInfoBox button.gems-btn-add {
+            .gems-transactionCategory button.gems-btn-add {
                 float: right;
             }
 
             /* ERROR  - static width */
-            fieldset.gems-partyInformation select {
+            fieldset.gems-transactionUnit select {
                 width: 170px
             }
-            fieldset.gems-partyInformation input {
+            fieldset.gems-transactionUnit input {
                 width: 150px;                
-            }
-
-            .gems-display-none {
-                display: none;
             }
 
 
@@ -95,38 +91,34 @@
             <div class="row">
                 <div class="span5">
 
-                    <div class="gems-groupInfoBox well" id="borrower">
+                    <!-- Borrower box -->
+                    <div class="gems-transactionCategory well" id="borrower">                        
                         <fieldset>
-
-                            <legend>                            
-                                Borrower
-                                <span class="gems-groupInfoBox-sum"></span>
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
+                            <legend>
+                                <span>Borrower</span>
+                                <output>&nbsp;</output>                                
+                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
                             </legend>
-
-
                         </fieldset>
-
-                    </div>     
+                    </div>
 
                 </div>
                 <div class="span2">
                     Image holder
                 </div>
                 <div class="span5">
-                    <div class="gems-groupInfoBox well">
+
+                    <!-- Lender box -->
+                    <div class="gems-transactionCategory well" id="lender">
                         <fieldset>
-
-                            <legend>                            
-                                Lender                                                   
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
+                            <legend>
+                                <span>Lender</span>
+                                <output>&nbsp;</output>                                
+                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
                             </legend>
-
-
-
                         </fieldset>
+                    </div>
 
-                    </div>     
                 </div>
             </div>
 
@@ -141,6 +133,7 @@
             <option value="Bart">Bart</option>
             <option value="Fred Flinstone">Fred Flinstone</option>
         </datalist>
+        
 
 
 
@@ -162,15 +155,20 @@
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-carousel.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-typeahead.js"></script>
         
-        <script src="<%=SITE_ROOT%>src/js/transaction-unit-factory.js"></script>
+        <script src="<%=SITE_ROOT%>src/js/linked-list.js"></script>
+
+        <script src="<%=SITE_ROOT%>src/js/transaction-unit.js"></script>
+        <script src="<%=SITE_ROOT%>src/js/transaction-category.js"></script>
 
         <script type="text/javascript">
             
 
-            //var pinf = new PartyInformation();
-            //alert(pinf.getHtmlElement());
+
             TransactionUnitFactory.initialise($('#userList'));
-            $('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
+            
+            var borrowerBox = new TransactionCategory ($('#borrower'));
+            var lenderBox = new TransactionCategory ($('#lender'));
+            //$('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
             
           
         </script>

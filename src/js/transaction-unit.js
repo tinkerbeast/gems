@@ -38,19 +38,28 @@ TransactionUnit.prototype.onChange = function(event) {
 
 TransactionUnit.prototype.isValid = function() {
     // TODO use val() method
-    var val = this.element.children("input").attr("value");    
+    var val = this.element.children("input").val();
     return (val.search(/^\d+(\.\d+)?$/) != -1);
 };
 
 TransactionUnit.prototype.getValue = function() {
     // TODO use val() method
-    return this.element.children("input").attr("value");
+    return parseInt(this.element.children("input").val());
 };
 
 TransactionUnit.prototype.getHtmlElement = function() {
     return this.element;
 };
 
+TransactionUnit.prototype.getData = function() {
+    
+    var data = {
+        "user": this.element.children("select").val(), 
+        "amount": this.getValue()
+    };
+    
+    return data;
+};
 
 
 

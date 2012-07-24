@@ -41,6 +41,12 @@
             fieldset.gems-transactionUnit input {
                 width: 150px;                
             }
+            
+            fieldset.gems-transactionCommon  input,
+            fieldset.gems-transactionCommon  button 
+            {
+                width: 100%;                
+            }
 
 
         </style>
@@ -75,7 +81,9 @@
                     <a class="brand" href="#">Gems</a>
                     <div class="nav-collapse">
                         <ul class="nav">
-                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="<%=SITE_ROOT%>index.jsp">Home</a></li>
+                            <li class="active"><a href="<%=SITE_ROOT%>src/html/group-information-box.jsp">Transaction</a></li>
+                            <li><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                         </ul>
@@ -104,7 +112,15 @@
 
                 </div>
                 <div class="span2">
-                    Image holder
+                    
+                    <div style="height: 315px">Image holder</div>
+                    
+                    <fieldset class="gems-transactionCommon">
+                        <input  list="expenseList" />
+                        <br><br>
+                        <button class="btn" type="submit">Submit</button>
+                    </fieldset>
+                    
                 </div>
                 <div class="span5">
 
@@ -123,7 +139,6 @@
             </div>
 
 
-
         </div> <!-- /container -->
 
         <!-- Model elements
@@ -133,7 +148,13 @@
             <option value="Bart">Bart</option>
             <option value="Fred Flinstone">Fred Flinstone</option>
         </datalist>
-        
+
+        <datalist id="expenseList">
+            <option value="Beer">Beer</option>
+            <option value="Skateboard">Skateboard</option>
+            <option value="Steak">Steak</option>
+        </datalist>
+
 
 
 
@@ -154,7 +175,7 @@
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-collapse.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-carousel.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-typeahead.js"></script>
-        
+
         <script src="<%=SITE_ROOT%>src/js/linked-list.js"></script>
 
         <script src="<%=SITE_ROOT%>src/js/transaction-unit.js"></script>
@@ -169,6 +190,7 @@
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
             //$('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
+            
             
           
         </script>

@@ -32,7 +32,6 @@ TransactionCategory.prototype.onAdd = function(event) {
     $(fieldset).append(tranUnit.getHtmlElement());
 };
 
-
 TransactionCategory.prototype.onRemove  = function(removedObject) {    
     this.list.remove(removedObject);
     this.onUpdate(removedObject);
@@ -44,7 +43,7 @@ TransactionCategory.prototype.onUpdate  = function(updateObject) {
     var sum = 0.0;
     for (var i = 0; i < this.list.length; i++) {
         if(node.isValid()) {
-            sum += parseInt(node.getValue());
+            sum += node.getValue();
         } else {
             sum = -1;
             break;
@@ -62,5 +61,14 @@ TransactionCategory.prototype.onUpdate  = function(updateObject) {
         this.sumVal = 0;
         this.element.find("output").text("");
     }
+};
+
+TransactionCategory.prototype.getCommitData  = function() {
+    
+    var node = this.list.first;
+    
+    for (var i = 0; i < this.list.length; i++) {
+      
+    }   
 };
 

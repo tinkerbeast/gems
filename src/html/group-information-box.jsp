@@ -4,9 +4,14 @@
     Author     : rishin.goswami
 --%>
 
+<%@page import="java.text.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String SITE_ROOT = "http://localhost:8084/gems/";
+    String DATE_FORMAT = "E, dd MMM yyyy";
+    String JS_DATE_FORMAT = "D, dd M yy";
+
+    Format formatter = new SimpleDateFormat(DATE_FORMAT);
 %>
 
 <!DOCTYPE html>
@@ -19,10 +24,12 @@
         <meta name="author" content="">
 
         <!-- Le styles -->
-        <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link type="text/css" href="<%=SITE_ROOT%>lib/jquery-ui/css/jquery-ui.css" rel="stylesheet" />
+        <link type="text/css" href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap.css" rel="stylesheet">
         <style>
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+                overflow-y: scroll;
             }
 
 
@@ -41,7 +48,7 @@
             fieldset.gems-transactionUnit input {
                 width: 150px;                
             }
-            
+
             fieldset.gems-transactionCommon  input,
             fieldset.gems-transactionCommon  button 
             {
@@ -112,15 +119,17 @@
 
                 </div>
                 <div class="span2">
-                    
-                    <div style="height: 315px">Image holder</div>
-                    
+
+                    <div style="height: 275px">Image holder</div>
+
                     <fieldset class="gems-transactionCommon">
-                        <input  list="expenseList" />
-                        <br><br>
-                        <button class="btn" type="submit">Submit</button>
+
+                        <input type="text" id="gems-transaction-datepicker" value="<%=formatter.format(new java.util.Date())%>"/>
+                        <input type="text" list="expenseList" placeholder="expense tag"/>
+                        <br>
+                        <button class="btn " type="submit">Transact</button>
                     </fieldset>
-                    
+
                 </div>
                 <div class="span5">
 
@@ -163,6 +172,8 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="<%=SITE_ROOT%>lib/jquery/js/jquery.js"></script>
+        <script src="<%=SITE_ROOT%>lib/jquery-ui/js/jquery-ui.js"></script>
+
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-transition.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-alert.js"></script>
         <script src="<%=SITE_ROOT%>lib/bootstrap/js/bootstrap-modal.js"></script>
@@ -190,6 +201,10 @@
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
             //$('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
+            
+            $(function() {
+                $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
+            });
             
             
           

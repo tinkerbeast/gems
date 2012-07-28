@@ -24,6 +24,23 @@
             body {
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
             }
+
+            .jumbotron h1 {
+                font-size: 81px;
+                font-weight: bold;
+                letter-spacing: -1px;
+                line-height: 1;
+                margin-bottom: 9px;
+            }
+
+            .jumbotron p {
+                font-weight: 300;
+                margin-bottom: 18px;
+            }
+
+            .subhead h1 {
+                font-size: 54px;
+            }
         </style>
         <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -55,7 +72,7 @@
                         <ul class="nav">
                             <li class="active"><a href="#">Home</a></li>
                             <li><a href="<%=SITE_ROOT%>src/html/transaction.jsp">Transaction</a></li>
-                            <li><a href="#">Summary</a></li>
+                            <li><a href="<%=SITE_ROOT%>src/html/summary.jsp">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                         </ul>
@@ -66,10 +83,14 @@
 
         <div class="container">
 
-            <h1>Gems expense management system</h1>
-            <p>Gems has reached yet another version. It's slicker, it's shinier 
-                and it's HTML5. Still a lot of work to be done to clean up 
-                things, but <strong>welcome to Gems 3 beta</strong>.</p>
+            <header class="jumbotron subhead">
+                <h1>Gems expense management system</h1>
+                <p class="lead">Gems has reached yet another version. It's slicker, it's shinier 
+                    and it's HTML5. Still a lot of work to be done to clean up 
+                    things, but <strong>welcome to Gems 3 beta</strong>.</p>
+            </header>
+
+
 
         </div> <!-- /container -->
 

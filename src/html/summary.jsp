@@ -1,6 +1,6 @@
 <%-- 
-    Document   : transaction
-    Created on : Jul 16, 2012, 5:54:43 PM
+    Document   : summary
+    Created on : Jul 29, 2012, 02:35:54 PM
     Author     : rishin.goswami
 --%>
 
@@ -31,31 +31,6 @@
                 padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
                 overflow-y: scroll;
             }
-
-
-            /* WARNING - static height */
-            .gems-transactionCategory {
-                height: 350px;
-            }
-            .gems-transactionCategory button.gems-btn-add {
-                float: right;
-            }
-
-            /* ERROR  - static width */
-            fieldset.gems-transactionUnit select {
-                width: 170px
-            }
-            fieldset.gems-transactionUnit input {
-                width: 150px;                
-            }
-
-            fieldset.gems-transactionCommon  input,
-            fieldset.gems-transactionCommon  button 
-            {
-                width: 100%;                
-            }
-
-
         </style>
         <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -74,6 +49,8 @@
 
     <body>
 
+
+
         <!-- Visual elements
         ================================================== -->
 
@@ -89,8 +66,8 @@
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li><a href="<%=SITE_ROOT%>index.jsp">Home</a></li>
-                            <li class="active"><a href="#">Transaction</a></li>
-                            <li><a href="<%=SITE_ROOT%>src/html/summary.jsp">Summary</a></li>
+                            <li><a href="<%=SITE_ROOT%>src/html/group-information-box.jsp">Transaction</a></li>
+                            <li class="active"><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
                         </ul>
@@ -99,59 +76,52 @@
             </div>
         </div>
 
+
         <div class="container">
 
 
 
+
+
+
             <div class="row">
-                <div class="span5">
 
-                    <!-- Borrower box -->
-                    <div class="gems-transactionCategory well" id="borrower">                        
-                        <fieldset>
-                            <legend>
-                                <span>Borrower</span>
-                                <output>&nbsp;</output>                                
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
-                            </legend>
-                        </fieldset>
-                    </div>
-
+                <div class="span3">
+                    <!-- TODO valid user selction-->
+                    <label>Group name</label>
+                    <input class="" type="text" value="world" disabled="disabled"/>
                 </div>
-                <div class="span2">
 
-                    <div style="height: 275px">
-                        &nbsp;
-                    </div>
-
-                    <fieldset class="gems-transactionCommon">
-
-                        <input type="text" id="gems-transaction-datepicker" value="<%=formatter.format(new java.util.Date())%>"/>
-
-                        <!-- WARNING: HTML5 list binding only -->
-                        <input type="text" id="gems-transaction-expenseList" list="expenseList" placeholder="expense tag"/>
-
-                        <br>
-                        <button id="submitButton" class="btn " type="submit" onclick="sendFormData(); return false;" data-loading-text="Processing transaction...">Transact</button>
-
-                    </fieldset>
-
+                <div class="span3">
+                    <label>From date</label>
+                    <input id="gems-summary-dateFrom" type="text" name="fromDate" value="<%=formatter.format(new java.util.Date())%>"/>
                 </div>
-                <div class="span5">
 
-                    <!-- Lender box -->
-                    <div class="gems-transactionCategory well" id="lender">
-                        <fieldset>
-                            <legend>
-                                <span>Lender</span>
-                                <output>&nbsp;</output>                                
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
-                            </legend>
-                        </fieldset>
-                    </div>
-
+                <div class="span3">
+                    <label>To date</label>
+                    <input id="gems-summary-dateTo" type="text" name="toDate" value="<%=formatter.format(new java.util.Date())%>"/>
                 </div>
+
+                <div class="span3">
+                    <!-- bad semantics TODO fix -->
+                    <label>&nbsp;</label>
+                    <button id="gems-summary-fetch" class="btn " 
+                            type="submit" data-loading-text="Fetching data..."
+                            onclick="sendFormData();return false;">Fetch data</button>
+                </div>
+
             </div>
+
+            <hr>    
+
+            <div class="row">
+                <div id="tempId" class="span4">
+
+                   
+
+                </div>    
+            </div>
+
 
             <div id="pageAlert" class="alert hidden">
                 <!--<button class="close" data-dismiss="alert">×</button>-->
@@ -162,7 +132,10 @@
             </div>
 
 
+
         </div> <!-- /container -->
+
+
 
         <!-- Model elements
         ================================================== -->
@@ -172,8 +145,6 @@
 
         <!-- WARNING: HTML5 only elements -->
         <datalist id="expenseList"></datalist>
-
-
 
 
 
@@ -205,8 +176,10 @@
             
             // Disable everything at begining
             // ==============================
-            $("fieldset button").attr("disabled", "disabled");
-            $("fieldset input").attr("disabled", "disabled");
+
+            // TODO
+            //$("form button").attr("disabled", "disabled");
+            //$("form input").attr("disabled", "disabled");
 
             
             function setPageStatus(status, textStatus, textDescription) {
@@ -221,6 +194,7 @@
             
             var pageLoad = parseInt(0);
             
+            /*
             // Load user list
             var userReq = $.ajax({
                 url: "<%=SITE_ROOT%>service/info-provider", 
@@ -238,96 +212,64 @@
             userReq.fail(function(jqXHR, textStatus, httpStatus) {
                 setPageStatus("alert-error", "Page load error!", "Error loading user list");
             });
+             */
             
-            // Load expense list
-            var expenseReq = $.ajax({
+            
+            
+            $( "#gems-summary-dateFrom").datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
+            $( "#gems-summary-dateTo").datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
+            
+            var dateReq = $.ajax({
                 url: "<%=SITE_ROOT%>service/info-provider", 
                 async: false,
                 type: "POST",
-                data: {service: 2},
+                data: {service: 6},
                 dataType: "html"
-            });           
-
-            expenseReq.done(function(msg) {
-                $("#expenseList").html( msg );
+            });
+            dateReq.done(function(msg) {
+                $( "#gems-summary-dateFrom").datepicker("setDate", new Date(parseInt(msg)));
                 pageLoad++;
             });
-
-            expenseReq.fail(function(jqXHR, textStatus, httpStatus) {
-                setPageStatus("alert-error", "Page load error!", "Error loading expense list");
+            dateReq.fail(function(jqXHR, textStatus, httpStatus) {
+                setPageStatus("alert-error", "Page load error!", "Error getting initial date");
             });
             
-            TransactionUnitFactory.initialise($('#userList'));
-            
-            var borrowerBox = new TransactionCategory ($('#borrower'));
-            var lenderBox = new TransactionCategory ($('#lender'));
-            
-            $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
             
             // Renable the page
             // ================
-            if(pageLoad==2) {
-                $("fieldset button").removeAttr("disabled");
-                $("fieldset input").removeAttr("disabled");
-            }
+            
+            //TODO
+            //if(pageLoad==1) {                
+            //    $("form input").removeAttr("disabled");
+            //    $("form button").removeAttr("disabled");
+            //}
             
             
       
             function sendFormData() {
                 
-                var btn = $("#submitButton");
+                var btn = $("#gems-summary-fetch");
                 btn.button('loading');
                 
-                // Validate transaction-boxes
-                if(!borrowerBox.isValid || !lenderBox.isValid) {
-                    setPageStatus("alert-error", "Invalid transaction data!", "One or more data units are invalid");
-                    btn.button('reset');
-                    return;
-                }
-                if(borrowerBox.sumVal != lenderBox.sumVal) {
-                    setPageStatus("alert-error", "Invalid transaction data!", "Left hand and right hand side sums do not match");
-                    btn.button('reset');
-                    return;
-                }
-                
-                // Get / validate expense type tag
-                var expTypeVal = $("#gems-transaction-expenseList").val();
-                if(expTypeVal == "") {
-                    setPageStatus("alert-error", "Invalid transaction data!", "Expense type tag cannot be empty");
-                    btn.button('reset');
-                    return;
-                }
-                
-                // Get datas
-                var dateVal =  $( "#gems-transaction-datepicker" ).datepicker("getDate" ).getTime();                
-                var borrowerData = borrowerBox.getData();
-                var lenderData = lenderBox.getData();
+                // Get dates
+                var dateFromVal =  $( "#gems-summary-dateFrom" ).datepicker("getDate" ).getTime();
+                var dateToVal =  $( "#gems-summary-dateTo" ).datepicker("getDate" ).getTime();
                    
                 // Send POST request
                 var transactReq = $.ajax({
-                    url: "<%=SITE_ROOT%>service/process-transaction", 
+                    url: "<%=SITE_ROOT%>service/info-provider", 
                     async: false,
                     type: "POST",
                     data: {
-                        "borrowerUser": borrowerData.userList,
-                        "borrowerAmount": borrowerData.amountList,
-                        "lenderUser": lenderData.userList,
-                        "lenderAmount": lenderData.amountList,
-                        "date": dateVal,
-                        "type": expTypeVal                        
+                        "service": 3,
+                        "fromDate": dateFromVal,
+                        "toDate": dateToVal
                     },
                     dataType: "html"
-                });           
-
-                transactReq.done(function(msg) {
-                    var statusCode = parseInt(msg);
-                    if(statusCode == 1) {
-                        setPageStatus("alert-success", "Transaction successful!", "");
-                    } else {
-                        setPageStatus("alert-error", "Transaction error!", "Error while processing data on server [code: "+ statusCode + "]");
-                    }
                 });
-
+                transactReq.done(function(msg) {
+                    $('#tempId').html(msg);
+                });
                 transactReq.fail(function(jqXHR, textStatus, httpStatus) {
                     setPageStatus("alert-error", "Transaction error!", "Connection / HTTP error [" + textStatus +": "+ httpStatus + "]");
                 });

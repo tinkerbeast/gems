@@ -7,8 +7,10 @@ package org.tinkerbeast.gems.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,23 +95,66 @@ public class InfoProvider extends HttpServlet {
                 //out.println("</root>");
             }
 
+            // Code 3 = Debitor block
+            // Code 4 = Creditor block
             if (serviceCode == 3 || serviceCode == 4) {
 
-                int p_id = Integer.parseInt(request.getParameter("user"));
+                // TODO WARNING: Hard-coded value for `world` - Needs better logic
+                int MEDIATOR_USER = 3;
+
+                int p_id = MEDIATOR_USER; //Integer.parseInt(request.getParameter("user"));
                 long fromDate = Long.parseLong(request.getParameter("fromDate"));
                 long toDate = Long.parseLong(request.getParameter("toDate"));
 
+                Map<String, Float> accountMap = new HashMap<String, Float>();
 
-                rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, serviceCode));
 
-                out.println("<root>");
+                // Debitor table
+                rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, 3));
+                out.println("<h3>Debit table</h3>"
+                        + "<table class=\"table table-bordered table-condensed\">"
+                        + "<thead><tr>"
+                        + "<th>User</th>"
+                        + "<th>Amount</th>"
+                        + "</tr></thead>"
+                        + "<tbody>");
                 while (rs.next()) {
                     String party = rs.getString("p_name");
                     float amount = rs.getFloat("total");
-
-                    out.println("<info party=\"" + party + "\" amount=\"" + amount + "\"></info>");
+                    out.println("<tr><td>" + party + "</td><td>" + amount + "</tr>");
+                    accountMap.put(party, amount);
                 }
-                out.println("</root>");
+                out.println("</tbody></table>");
+
+                // Creditor table
+                rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, 4));
+                out.println("<h3>Credit table</h3>"
+                        + "<table class=\"table table-bordered table-condensed\">"
+                        + "<thead><tr>"
+                        + "<th>User</th>"
+                        + "<th>Amount</th>"
+                        + "</tr></thead>"
+                        + "<tbody>");
+                while (rs.next()) {
+                    String party = rs.getString("p_name");
+                    float amount = rs.getFloat("total");
+                    out.println("<tr><td>" + party + "</td><td>" + amount + "</tr>");
+                    Float debitObj = accountMap.get(party);
+                    float debit = debitObj == null ? 0.0f : debitObj.floatValue();
+                    accountMap.put(party, (debit - amount));
+                }
+                out.println("</tbody></table>");
+
+
+                out.println("<table class=\"table\">");
+                Set<String> keys = accountMap.keySet();
+                for (String key : keys) {
+                    out.println("<tr><td>" + key + "</td><td>" + accountMap.get(key) + "</tr>");
+                }
+                out.println("</table>");
+
+
+
             }
 
             // Testing purposes
@@ -127,6 +172,19 @@ public class InfoProvider extends HttpServlet {
                     out.println();
                 }
                 out.println("]]></root>");
+            }
+
+            // Get the minimum date in transactions or current date
+            // ====================================================
+            if (serviceCode == 6) {
+
+                rs = stm_scrl_r.executeQuery("select  MIN(`t_date`) from `gemsdb`.`transaction`");
+
+                Date minDate = new Date(new java.util.Date().getTime());
+                if (rs.next()) {
+                    minDate = rs.getDate(1);
+                }
+                out.println(minDate.getTime());
             }
 
         } finally {

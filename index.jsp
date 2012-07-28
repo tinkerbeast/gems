@@ -6,7 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-String SITE_ROOT = "http://localhost:8080/gems/";
+    String SITE_ROOT = "http://localhost:8080/gems/";
 %>
 
 <!DOCTYPE html>
@@ -54,7 +54,7 @@ String SITE_ROOT = "http://localhost:8080/gems/";
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li class="active"><a href="#">Home</a></li>
-                            <li><a href="<%=SITE_ROOT%>src/html/group-information-box.jsp">Transaction</a></li>
+                            <li><a href="<%=SITE_ROOT%>src/html/transaction.jsp">Transaction</a></li>
                             <li><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
@@ -66,8 +66,10 @@ String SITE_ROOT = "http://localhost:8080/gems/";
 
         <div class="container">
 
-            <h1>Gems layout template</h1>
-            <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+            <h1>Gems expense management system</h1>
+            <p>Gems has reached yet another version. It's slicker, it's shinier 
+                and it's HTML5. Still a lot of work to be done to clean up 
+                things, but <strong>welcome to Gems 3 beta</strong>.</p>
 
         </div> <!-- /container -->
 

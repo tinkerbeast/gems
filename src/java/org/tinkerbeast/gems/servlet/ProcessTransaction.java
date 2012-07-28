@@ -6,13 +6,9 @@ package org.tinkerbeast.gems.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,85 +19,138 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ProcessTransaction extends HttpServlet {
 
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException, SQLException {
+            throws ServletException, IOException {
 
-        // valid status code
+        // TODO WARNING: Hard-coded value for `world` - Needs better logic
+        int MEDIATOR_USER = 3;
+
         int status = 1;
 
-
-        //retreived values
+        // Retrieve and validate values
+        // ============================
         Map<String, String[]> req = request.getParameterMap();
+        int[] borrowerUser = null;
+        float[] borrowerAmount = null;
+        int[] lenderUser = null;
+        float[] lenderAmount = null;
+        Date date = null;
+        int type = -1;
 
-        int[] creditor = convertToIntArray(req.get("creditor"));
-        int[] debitor = convertToIntArray(req.get("debitor"));        
-        int[] type = convertToIntArray(req.get("type"));
-        float[] amount = convertToFloatArray(req.get("amount"));
-        java.sql.Date[] date = convertToDateArray(req.get("date"));
+        if (status == 1) {
+            try {
+                borrowerUser = convertToIntArray(req.get("borrowerUser[]"));
+                borrowerAmount = convertToFloatArray(req.get("borrowerAmount[]"));
+                if (borrowerUser.length != borrowerAmount.length) {
+                    throw new IllegalArgumentException("Borrower array corrupted");
+                }
 
+                lenderUser = convertToIntArray(req.get("lenderUser[]"));
+                lenderAmount = convertToFloatArray(req.get("lenderAmount[]"));
+                if (lenderUser.length != lenderAmount.length) {
+                    throw new IllegalArgumentException("Lender array corrupted");
+                }
 
-        // wrong logic, but fast logic
-        int len = creditor.length ^ debitor.length ^ amount.length ^ date.length ^ type.length;
-        if (len != creditor.length) {
-            status = 0;
+                date = new Date(Long.parseLong(req.get("date")[0]));
+                type = Integer.parseInt(req.get("type")[0]);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                status = 0;
+            }
         }
 
-        // establish connection
+        // Create creditor / debitor units
+        // ===============================
+        // ERROR can cause null pointer 
+        int transactionLength = borrowerUser.length + lenderUser.length;
+        int[] creditor = new int[transactionLength];
+        int[] debitor = new int[transactionLength];
+        float[] amount = new float[transactionLength];
+
+        if (status == 1) {
+
+            for (int i = 0; i < borrowerUser.length; i++) {
+                creditor[i] = borrowerUser[i];
+                debitor[i] = MEDIATOR_USER;
+                amount[i] = borrowerAmount[i];
+            }
+
+            int offset = borrowerUser.length;
+            for (int i = 0; i < lenderUser.length; i++) {
+                creditor[i + offset] = MEDIATOR_USER;
+                debitor[i + offset] = lenderUser[i];
+                amount[i + offset] = lenderAmount[i];
+            }
+        }
+
+        // Store in database
+        // =================
         Connection con = null;
         Statement stm = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
 
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gemsdb", "gems", "gems");
-            stm = con.createStatement();
-        } catch (ClassNotFoundException e) {
-            status = 0;
-            e.printStackTrace();
+        // establish connection 
+        if (status == 1) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/gemsdb", "gems", "gems");
+                stm = con.createStatement();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                status = 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                status = 0;
+            }
         }
 
-
         // sql operations
+        if (status == 1) {
+            try {
+                String INSERT_TRANSACTION;
+                for (int i = 0; i < transactionLength; i++) {
+                    INSERT_TRANSACTION = ""
+                            + "INSERT INTO `gemsdb`.`transaction` "
+                            + "VALUES ( null, " + creditor[i] + "," + debitor[i] + "," + amount[i] + "," + type + ",'" + date.toString() + "')";
 
-        if (status != 0) {
-            String INSERT_TRANSACTION;
+                    stm.execute(INSERT_TRANSACTION);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                status = -1;
+            }
 
-            for (int i = 0; i < len; i++) {
-                INSERT_TRANSACTION = "INSERT INTO  gemsdb.`transaction` VALUES ( null, " + creditor[i] + "," + debitor[i] + "," + amount[i] + "," + type[i] + ",'" + date[i].toString() + "')";
-
-                stm.execute(INSERT_TRANSACTION);
-
-                //status = stm.execute(INSERT_TRANSACTION) ? 1 : 0;
-                //System.out.println(INSERT_TRANSACTION);
+            try {
+                stm.close();
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
 
 
+        // Output success / failure to page
+        // ================================
 
-        // write output
-        response.setContentType("text/xml;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            out.println("<root>");
-            out.println("<status>" + status + "</status>");
-            out.println("<message></message>");
-            out.println("</root>");
+            out.println(status);
         } finally {
             out.close();
         }
-
-        // close connection
-        con.close();
-
     }
 
-    int[] convertToIntArray(String[] arr) {
+    int[] convertToIntArray(String[] arr) throws NumberFormatException {
 
         int[] intArr = new int[arr.length];
 
@@ -112,7 +161,7 @@ public class ProcessTransaction extends HttpServlet {
         return intArr;
     }
 
-    float[] convertToFloatArray(String[] data) {
+    float[] convertToFloatArray(String[] data) throws NumberFormatException {
         float[] floatArr = new float[data.length];
         for (int i = 0; i < floatArr.length; i++) {
             floatArr[i] = Float.parseFloat(data[i]);
@@ -133,7 +182,9 @@ public class ProcessTransaction extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -142,15 +193,13 @@ public class ProcessTransaction extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        processRequest(request, response);
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -159,19 +208,16 @@ public class ProcessTransaction extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            processRequest(request, response);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Processes transactions generated by /gems/src/html/transaction.jsp";
     }// </editor-fold>
 }

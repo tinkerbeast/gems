@@ -58,17 +58,27 @@ TransactionCategory.prototype.onUpdate  = function(updateObject) {
         this.element.find("output").text("(" + sum + ")");
     } else {
         this.isValid = false;
-        this.sumVal = 0;
+        this.sumVal = 0.0;
         this.element.find("output").text("");
     }
 };
 
-TransactionCategory.prototype.getCommitData  = function() {
+TransactionCategory.prototype.getData  = function() {
+    
+    var userList = new Array();
+    var amountList = new Array();
     
     var node = this.list.first;
-    
     for (var i = 0; i < this.list.length; i++) {
-      
+        var data = node.getData();
+        userList.push(data.user);
+        amountList.push(data.amount);
+        node = node.next;
     }   
+    
+    return {
+        "userList":  userList, 
+        "amountList": amountList
+    };
 };
 

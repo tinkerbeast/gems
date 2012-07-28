@@ -128,9 +128,13 @@
                     <fieldset class="gems-transactionCommon">
 
                         <input type="text" id="gems-transaction-datepicker" value="<%=formatter.format(new java.util.Date())%>"/>
-                        <input type="text" list="expenseList" placeholder="expense tag"/>
+
+                        <!-- WARNING: HTML5 list binding only -->
+                        <input type="text" id="gems-transaction-expenseList" list="expenseList" placeholder="expense tag"/>
+
                         <br>
-                        <button class="btn " type="submit">Transact</button>
+                        <button id="submitButton" class="btn " type="submit" onclick="sendFormData(); return false;" data-loading-text="Processing transaction...">Transact</button>
+
                     </fieldset>
 
                 </div>
@@ -151,7 +155,7 @@
             </div>
 
             <div id="pageAlert" class="alert hidden">
-                <button class="close" data-dismiss="alert">×</button>
+                <!--<button class="close" data-dismiss="alert">×</button>-->
                 <p>
                     <strong>Alert heading placeholder</strong> 
                     <span>Alert text placeholder</span>
@@ -163,8 +167,11 @@
 
         <!-- Model elements
         ================================================== -->
+
+        <!-- WARNING: HTML5 only elements -->
         <datalist id="userList"></datalist>
 
+        <!-- WARNING: HTML5 only elements -->
         <datalist id="expenseList"></datalist>
 
 
@@ -202,7 +209,6 @@
             $("fieldset button").attr("disabled", "disabled");
             $("fieldset input").attr("disabled", "disabled");
 
-            
             
             function setPageStatus(status, textStatus, textDescription) {
                 var ele = $('#pageAlert');
@@ -257,9 +263,7 @@
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
             
-            $(function() {
-                $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
-            });
+            $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
             
             // Renable the page
             // ================
@@ -268,8 +272,77 @@
                 $("fieldset input").removeAttr("disabled");
             }
             
-
             
+      
+            function sendFormData() {
+                
+                var btn = $("#submitButton");
+                btn.button('loading');
+                
+                // Validate transaction-boxes
+                if(!borrowerBox.isValid || !lenderBox.isValid) {
+                    setPageStatus("alert-error", "Invalid transaction data!", "One or more data units are invalid");
+                    btn.button('reset');
+                    return;
+                }
+                if(borrowerBox.sumVal != lenderBox.sumVal) {
+                    setPageStatus("alert-error", "Invalid transaction data!", "Left hand and right hand side sums do not match");
+                    btn.button('reset');
+                    return;
+                }
+                
+                // Get / validate expense type tag
+                var expTypeVal = $("#gems-transaction-expenseList").val();
+                if(expTypeVal == "") {
+                    setPageStatus("alert-error", "Invalid transaction data!", "Expense type tag cannot be empty");
+                    btn.button('reset');
+                    return;
+                }
+                
+                // Get datas
+                var dateVal =  $( "#gems-transaction-datepicker" ).datepicker("getDate" ).getTime();                
+                var borrowerData = borrowerBox.getData();
+                var lenderData = lenderBox.getData();
+                   
+                // Send POST request
+                var transactReq = $.ajax({
+                    url: "<%=SITE_ROOT%>service/process-transaction", 
+                    async: false,
+                    type: "POST",
+                    data: {
+                        "borrowerUser": borrowerData.userList,
+                        "borrowerAmount": borrowerData.amountList,
+                        "lenderUser": lenderData.userList,
+                        "lenderAmount": lenderData.amountList,
+                        "date": dateVal,
+                        "type": expTypeVal                        
+                    },
+                    dataType: "html"
+                });           
+
+                transactReq.done(function(msg) {
+                    var statusCode = parseInt(msg);
+                    if(statusCode == 1) {
+                        setPageStatus("alert-success", "Transaction successful!", "");
+                    } else {
+                        setPageStatus("alert-error", "Transaction error!", "Error while processing data on server [code: "+ statusCode + "]");
+                    }
+                });
+
+                transactReq.fail(function(jqXHR, textStatus, httpStatus) {
+                    setPageStatus("alert-error", "Transaction error!", "Connection / HTTP error [" + textStatus +": "+ httpStatus + "]");
+                });
+            
+                btn.button('reset');
+            }
+            
+            function show_all_fields(obj) {
+                var fields = [];
+                for (var m in obj) {
+                    fields.push("\n" + typeof obj[m] + " : " + m);
+                }
+                return fields.join(",");
+            }
             
           
         </script>

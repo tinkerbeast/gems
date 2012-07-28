@@ -44,7 +44,7 @@ TransactionUnit.prototype.isValid = function() {
 
 TransactionUnit.prototype.getValue = function() {
     // TODO use val() method
-    return parseInt(this.element.children("input").val());
+    return parseFloat(this.element.children("input").val());
 };
 
 TransactionUnit.prototype.getHtmlElement = function() {

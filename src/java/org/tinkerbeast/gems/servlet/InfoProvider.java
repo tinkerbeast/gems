@@ -60,7 +60,7 @@ public class InfoProvider extends HttpServlet {
         ResultSet rs;
 
         // write output
-        response.setContentType("text/xml;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
 

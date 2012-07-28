@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +19,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class InfoProvider extends HttpServlet {
 
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -65,37 +69,37 @@ public class InfoProvider extends HttpServlet {
 
                 rs = stm_scrl_r.executeQuery(RETREIVE_PARTY);
 
-                out.println("<root>");
+                //out.println("<root>");
                 while (rs.next()) {
                     int value = rs.getInt("p_id");
                     String name = rs.getString("p_name");
 
-                    out.println("<user name=\"" + name + "\" value=\"" + value + "\"></user>");
+                    //out.println("<user name=\"" + name + "\" value=\"" + value + "\"></user>");
+                    out.println("<option value=\"" + value + "\">" + name + "</option>");
                 }
-                out.println("</root>");
+                //out.println("</root>");
             }
             if (serviceCode == 2) {
                 rs = stm_scrl_r.executeQuery(RETREIVE_ETYPE);
 
-                out.println("<root>");
+                //out.println("<root>");
                 while (rs.next()) {
                     int value = rs.getInt("e_id");
                     String name = rs.getString("e_name");
 
-                    out.println("<etype name=\"" + name + "\" value=\"" + value + "\"></etype>");
+                    //out.println("<etype name=\"" + name + "\" value=\"" + value + "\"></etype>");
+                    out.println("<option value=\"" + value + "\">" + name + "</option>");
                 }
-                out.println("</root>");
+                //out.println("</root>");
             }
 
             if (serviceCode == 3 || serviceCode == 4) {
-
-
 
                 int p_id = Integer.parseInt(request.getParameter("user"));
                 long fromDate = Long.parseLong(request.getParameter("fromDate"));
                 long toDate = Long.parseLong(request.getParameter("toDate"));
 
-                
+
                 rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, serviceCode));
 
                 out.println("<root>");
@@ -108,6 +112,23 @@ public class InfoProvider extends HttpServlet {
                 out.println("</root>");
             }
 
+            // Testing purposes
+            if (serviceCode == 5) {
+                rs = stm_scrl_r.executeQuery("SELECT * FROM `gemsdb`.`partytransaction`");
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int colCount = rsmd.getColumnCount();
+                out.println("<root><![CDATA[");
+                while (rs.next()) {
+                    out.print(rs.getRow() + " : ");
+                    for (int i = 1; i <= colCount; i++) {
+                        out.print(rs.getString(i));
+                        out.print(",");
+                    }
+                    out.println();
+                }
+                out.println("]]></root>");
+            }
+
         } finally {
             out.close();
         }
@@ -118,8 +139,10 @@ public class InfoProvider extends HttpServlet {
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
+    /**
+     * Handles the HTTP
+     * <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -135,8 +158,10 @@ public class InfoProvider extends HttpServlet {
         }
     }
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
+    /**
+     * Handles the HTTP
+     * <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -152,8 +177,9 @@ public class InfoProvider extends HttpServlet {
         }
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

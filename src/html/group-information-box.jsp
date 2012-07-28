@@ -4,10 +4,11 @@
     Author     : rishin.goswami
 --%>
 
+<%@page import="org.tinkerbeast.gems.servlet.InfoProvider"%>
 <%@page import="java.text.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    String SITE_ROOT = "http://localhost:8084/gems/";
+    String SITE_ROOT = "http://localhost:8080/gems/";
     String DATE_FORMAT = "E, dd MMM yyyy";
     String JS_DATE_FORMAT = "D, dd M yy";
 
@@ -120,7 +121,9 @@
                 </div>
                 <div class="span2">
 
-                    <div style="height: 275px">Image holder</div>
+                    <div style="height: 275px">
+                        &nbsp;
+                    </div>
 
                     <fieldset class="gems-transactionCommon">
 
@@ -147,22 +150,22 @@
                 </div>
             </div>
 
+            <div id="pageAlert" class="alert hidden">
+                <button class="close" data-dismiss="alert">×</button>
+                <p>
+                    <strong>Alert heading placeholder</strong> 
+                    <span>Alert text placeholder</span>
+                </p>
+            </div>
+
 
         </div> <!-- /container -->
 
         <!-- Model elements
         ================================================== -->
-        <datalist id="userList">
-            <option value="Homer Simpson">Homer Simpson</option>
-            <option value="Bart">Bart</option>
-            <option value="Fred Flinstone">Fred Flinstone</option>
-        </datalist>
+        <datalist id="userList"></datalist>
 
-        <datalist id="expenseList">
-            <option value="Beer">Beer</option>
-            <option value="Skateboard">Skateboard</option>
-            <option value="Steak">Steak</option>
-        </datalist>
+        <datalist id="expenseList"></datalist>
 
 
 
@@ -194,17 +197,78 @@
 
         <script type="text/javascript">
             
+            // Disable everything at begining
+            // ==============================
+            $("fieldset button").attr("disabled", "disabled");
+            $("fieldset input").attr("disabled", "disabled");
 
+            
+            
+            function setPageStatus(status, textStatus, textDescription) {
+                var ele = $('#pageAlert');
+                ele.find("p strong").text(textStatus);
+                ele.find("p span").text(textDescription);
+                ele.attr("class", "alert " + status);
+            }
+            
+            // Initialize page with data from server
+            // =====================================
+            
+            var pageLoad = parseInt(0);
+            
+            // Load user list
+            var userReq = $.ajax({
+                url: "<%=SITE_ROOT%>service/info-provider", 
+                async: false,
+                type: "POST",
+                data: {service: 1},
+                dataType: "html"
+            });           
 
+            userReq.done(function(msg) {
+                $("#userList").html( msg );
+                pageLoad++;
+            });
+
+            userReq.fail(function(jqXHR, textStatus, httpStatus) {
+                setPageStatus("alert-error", "Page load error!", "Error loading user list");
+            });
+            
+            // Load expense list
+            var expenseReq = $.ajax({
+                url: "<%=SITE_ROOT%>service/info-provider", 
+                async: false,
+                type: "POST",
+                data: {service: 2},
+                dataType: "html"
+            });           
+
+            expenseReq.done(function(msg) {
+                $("#expenseList").html( msg );
+                pageLoad++;
+            });
+
+            expenseReq.fail(function(jqXHR, textStatus, httpStatus) {
+                setPageStatus("alert-error", "Page load error!", "Error loading expense list");
+            });
+            
             TransactionUnitFactory.initialise($('#userList'));
             
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
-            //$('#borrower').append(TransactionUnitFactory.produceUnit().getHtmlElement());
             
             $(function() {
                 $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
             });
+            
+            // Renable the page
+            // ================
+            if(pageLoad==2) {
+                $("fieldset button").removeAttr("disabled");
+                $("fieldset input").removeAttr("disabled");
+            }
+            
+
             
             
           

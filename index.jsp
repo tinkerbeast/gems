@@ -6,7 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-String SITE_ROOT = "http://localhost:8084/gems/";
+String SITE_ROOT = "http://localhost:8080/gems/";
 %>
 
 <!DOCTYPE html>

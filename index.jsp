@@ -26,21 +26,31 @@
             }
 
             .jumbotron h1 {
-                font-size: 81px;
+                font-size: 63px;
                 font-weight: bold;
                 letter-spacing: -1px;
                 line-height: 1;
-                margin-bottom: 9px;
+                margin-bottom: 7px;
             }
-
             .jumbotron p {
                 font-weight: 300;
-                margin-bottom: 18px;
+                margin-bottom: 14px;
             }
 
-            .subhead h1 {
-                font-size: 54px;
+            .masthead h1, .masthead p {
+                text-align: center;
             }
+            .masthead h1 {
+                margin-bottom: 14px;
+            }
+            .masthead p {
+                font-size: 23px;
+                line-height: 28px;
+                margin-left: 4%;
+                margin-right: 4%;
+            }
+
+
         </style>
         <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -83,9 +93,9 @@
 
         <div class="container">
 
-            <header class="jumbotron subhead">
+            <header class="jumbotron masthead">
                 <h1>Gems expense management system</h1>
-                <p class="lead">Gems has reached yet another version. It's slicker, it's shinier 
+                <p>Gems has reached yet another version. It's slicker, it's shinier 
                     and it's HTML5. Still a lot of work to be done to clean up 
                     things, but <strong>welcome to Gems 3 beta</strong>.</p>
             </header>

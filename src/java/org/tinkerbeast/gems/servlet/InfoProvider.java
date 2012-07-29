@@ -62,12 +62,13 @@ public class InfoProvider extends HttpServlet {
         ResultSet rs;
 
         // write output
-        response.setContentType("text/html;charset=UTF-8");
+
         PrintWriter out = response.getWriter();
         try {
 
             // probably bad coding using 'if's ... but practical
             if (serviceCode == 1) {
+                response.setContentType("text/html;charset=UTF-8");
 
                 rs = stm_scrl_r.executeQuery(RETREIVE_PARTY);
 
@@ -82,6 +83,8 @@ public class InfoProvider extends HttpServlet {
                 //out.println("</root>");
             }
             if (serviceCode == 2) {
+                response.setContentType("text/html;charset=UTF-8");
+
                 rs = stm_scrl_r.executeQuery(RETREIVE_ETYPE);
 
                 //out.println("<root>");
@@ -95,9 +98,9 @@ public class InfoProvider extends HttpServlet {
                 //out.println("</root>");
             }
 
-            // Code 3 = Debitor block
-            // Code 4 = Creditor block
-            if (serviceCode == 3 || serviceCode == 4) {
+            // Debitor table, Creditor table, User table
+            if (serviceCode == 3) {
+                response.setContentType("text/xml;charset=UTF-8");
 
                 // TODO WARNING: Hard-coded value for `world` - Needs better logic
                 int MEDIATOR_USER = 3;
@@ -107,58 +110,69 @@ public class InfoProvider extends HttpServlet {
                 long toDate = Long.parseLong(request.getParameter("toDate"));
 
                 Map<String, Float> accountMap = new HashMap<String, Float>();
+                final String TABLE_HEADER = ""
+                        + "<table class=\"table table-bordered table-condensed \">"
+                        + "<thead><tr>"
+                        + "<th>User</th>"
+                        + "<th>Amount</th>"
+                        + "</tr></thead>"
+                        + "<tbody>";
 
+                final String TABLE_FOOTER = "</tbody></table>";
+
+                out.println("<root>");
 
                 // Debitor table
+                out.print("<debitor><![CDATA[");
                 rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, 3));
-                out.println("<h3>Debit table</h3>"
-                        + "<table class=\"table table-bordered table-condensed\">"
-                        + "<thead><tr>"
-                        + "<th>User</th>"
-                        + "<th>Amount</th>"
-                        + "</tr></thead>"
-                        + "<tbody>");
+                out.print("<h3>Debit table</h3>");
+                out.print(TABLE_HEADER);
                 while (rs.next()) {
                     String party = rs.getString("p_name");
                     float amount = rs.getFloat("total");
-                    out.println("<tr><td>" + party + "</td><td>" + amount + "</tr>");
+                    out.print("<tr><td>" + party + "</td><td>" + amount + "</td></tr>");
                     accountMap.put(party, amount);
                 }
-                out.println("</tbody></table>");
+                out.print(TABLE_FOOTER);
+                out.println("]]></debitor>");
 
                 // Creditor table
+                out.print("<creditor><![CDATA[");
                 rs = stm_scrl_r.executeQuery(getQueryString(p_id, fromDate, toDate, 4));
-                out.println("<h3>Credit table</h3>"
-                        + "<table class=\"table table-bordered table-condensed\">"
-                        + "<thead><tr>"
-                        + "<th>User</th>"
-                        + "<th>Amount</th>"
-                        + "</tr></thead>"
-                        + "<tbody>");
+                out.print("<h3>Credit table</h3>");
+                out.print(TABLE_HEADER);
                 while (rs.next()) {
                     String party = rs.getString("p_name");
                     float amount = rs.getFloat("total");
-                    out.println("<tr><td>" + party + "</td><td>" + amount + "</tr>");
+                    out.print("<tr><td>" + party + "</td><td>" + amount + "</td></tr>");
                     Float debitObj = accountMap.get(party);
                     float debit = debitObj == null ? 0.0f : debitObj.floatValue();
                     accountMap.put(party, (debit - amount));
                 }
-                out.println("</tbody></table>");
+                out.print(TABLE_FOOTER);
+                out.println("]]></creditor>");
 
 
-                out.println("<table class=\"table\">");
+                out.println("<user><![CDATA[");
+                out.print("<h3>User summary</h3>");
+                out.print("<table class=\"table table-bordered leade\">");
                 Set<String> keys = accountMap.keySet();
                 for (String key : keys) {
-                    out.println("<tr><td>" + key + "</td><td>" + accountMap.get(key) + "</tr>");
+                    Float amount = accountMap.get(key);
+                    String color = amount < 0 ? "#B94A48" : "#468847";
+                    out.print("<tr><th>" + key + "</th><th style=\"color:" + color + "\">" + accountMap.get(key) + "</th></tr>");
                 }
-                out.println("</table>");
+                out.print("</table>");
+                out.println("]]></user>");
 
-
-
+                out.println("</root>");
+                
             }
 
             // Testing purposes
             if (serviceCode == 5) {
+                response.setContentType("text/xml;charset=UTF-8");
+
                 rs = stm_scrl_r.executeQuery("SELECT * FROM `gemsdb`.`partytransaction`");
                 ResultSetMetaData rsmd = rs.getMetaData();
                 int colCount = rsmd.getColumnCount();
@@ -177,6 +191,7 @@ public class InfoProvider extends HttpServlet {
             // Get the minimum date in transactions or current date
             // ====================================================
             if (serviceCode == 6) {
+                response.setContentType("text/html;charset=UTF-8");
 
                 rs = stm_scrl_r.executeQuery("select  MIN(`t_date`) from `gemsdb`.`transaction`");
 

@@ -79,29 +79,20 @@
 
         <div class="container">
 
-
-
-
-
-
             <div class="row">
-
                 <div class="span3">
                     <!-- TODO valid user selction-->
                     <label>Group name</label>
                     <input class="" type="text" value="world" disabled="disabled"/>
                 </div>
-
                 <div class="span3">
-                    <label>From date</label>
+                    <label>From date</label>                    
                     <input id="gems-summary-dateFrom" type="text" name="fromDate" value="<%=formatter.format(new java.util.Date())%>"/>
                 </div>
-
                 <div class="span3">
                     <label>To date</label>
                     <input id="gems-summary-dateTo" type="text" name="toDate" value="<%=formatter.format(new java.util.Date())%>"/>
                 </div>
-
                 <div class="span3">
                     <!-- bad semantics TODO fix -->
                     <label>&nbsp;</label>
@@ -109,17 +100,16 @@
                             type="submit" data-loading-text="Fetching data..."
                             onclick="sendFormData();return false;">Fetch data</button>
                 </div>
-
             </div>
 
             <hr>    
 
             <div class="row">
-                <div id="tempId" class="span4">
-
-                   
-
-                </div>    
+                <div class="span4">
+                    <div id="gems-summary-userTable"></div>
+                    <div id="gems-summary-debitorTable"></div>
+                    <div id="gems-summary-creditorTable"></div>
+                </div>
             </div>
 
 
@@ -268,7 +258,12 @@
                     dataType: "html"
                 });
                 transactReq.done(function(msg) {
-                    $('#tempId').html(msg);
+                    var $xml = $($.parseXML(msg));
+                    
+                    $("#gems-summary-debitorTable").html($xml.find("debitor").text());
+                    $("#gems-summary-creditorTable").html($xml.find("creditor").text());
+                    $("#gems-summary-userTable").html($xml.find("user").text());
+
                 });
                 transactReq.fail(function(jqXHR, textStatus, httpStatus) {
                     setPageStatus("alert-error", "Transaction error!", "Connection / HTTP error [" + textStatus +": "+ httpStatus + "]");

@@ -66,7 +66,7 @@
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li><a href="<%=SITE_ROOT%>index.jsp">Home</a></li>
-                            <li><a href="<%=SITE_ROOT%>src/html/group-information-box.jsp">Transaction</a></li>
+                            <li><a href="<%=SITE_ROOT%>src/html/transaction.jsp">Transaction</a></li>
                             <li class="active"><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>

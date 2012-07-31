@@ -37,7 +37,8 @@
             .gems-transactionCategory {
                 height: 350px;
             }
-            .gems-transactionCategory button.gems-btn-add {
+            .gems-transactionCategory button.gems-btn-add,
+            .gems-transactionCategory button.gems-btn-split {
                 float: right;
             }
 
@@ -112,7 +113,8 @@
                             <legend>
                                 <span>Borrower</span>
                                 <output>&nbsp;</output>                                
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
+                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
+                                <button class="btn gems-btn-split" href="#"><i class="icon-chevron-right"></i></button>                                
                             </legend>
                         </fieldset>
                     </div>
@@ -145,7 +147,8 @@
                             <legend>
                                 <span>Lender</span>
                                 <output>&nbsp;</output>                                
-                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>                                
+                                <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
+                                <button class="btn gems-btn-split" href="#"><i class="icon-chevron-left"></i></button>
                             </legend>
                         </fieldset>
                     </div>
@@ -261,6 +264,9 @@
             
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
+            borrowerBox.setTarget(lenderBox);
+            lenderBox.setTarget(borrowerBox);
+            
             
             $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
             

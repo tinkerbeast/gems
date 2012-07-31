@@ -21,6 +21,7 @@
 
 // TODO documentation for throw error 
 // TODO @class is currently discouraged
+// TODO move field elements out of constructor
 /**
  * @public
  * @class
@@ -133,6 +134,22 @@ TransactionUnit.prototype.getValue = function() {
     return parseFloat(this.element.children("input").val());
 };
 
+
+/**
+ * @public
+ * Set the input amount to a value.
+ * Sets the value to the JS backend as well as display it in the UI-component
+ * 
+ * @param {Number} value The value to be set
+ * @return {undefined}
+ */ 
+TransactionUnit.prototype.setValue = function(value) {
+    // TODO validate value
+    this.value = value;
+    this.element.children("input").val(value);
+};
+
+
 /**
  * @public
  * Get the HTML element supported by this JS instance.
@@ -201,7 +218,7 @@ var TransactionUnitFactory = {
      * @public
      * Initialise the HTML UI-component element withe a given user list
      * 
-     * @param {HTMLOptionElement[]} userList Array of user names and 
+     * @param {HTMLDataListElement} userList Array of user names and 
      * corresponding internal values
      * @return undefined
      */

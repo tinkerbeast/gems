@@ -26,11 +26,9 @@
         <!-- Le styles -->
         <link type="text/css" href="<%=SITE_ROOT%>lib/jquery-ui/css/jquery-ui.css" rel="stylesheet" />
         <link type="text/css" href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="<%=SITE_ROOT%>src/css/common.css" rel="stylesheet">
         <style>
-            body {
-                padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-                overflow-y: scroll;
-            }
+            /* page specific css */
         </style>
         <link href="<%=SITE_ROOT%>lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -54,15 +52,22 @@
         <!-- Visual elements
         ================================================== -->
 
+        <!-- Navigation bar -->
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
+
+                    <!-- Navbar collapse button -->
                     <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
+
+                    <!-- Logo / brand name -->
                     <a class="brand" href="#">Gems</a>
+
+                    <!-- Site common navigation -->
                     <div class="nav-collapse">
                         <ul class="nav">
                             <li><a href="<%=SITE_ROOT%>index.jsp">Home</a></li>
@@ -70,12 +75,20 @@
                             <li class="active"><a href="#">Summary</a></li>
                             <li><a href="#about">About</a></li>
                             <li><a href="#contact">Contact</a></li>
-                        </ul>
-                    </div><!--/.nav-collapse -->
+                        </ul>                            
+                    </div>
+
+
+                    <!-- Site common toolbar -->
+                    <form class="navbar-form btn-group pull-right">
+                        <a class="btn btn-inverse" href="#"><i class="gemsicon-help"></i></a>
+                    </form>
+
                 </div>
             </div>
         </div>
-
+        <!-- /Navigation bar -->
+        
 
         <div class="container">
 

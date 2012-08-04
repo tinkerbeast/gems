@@ -32,8 +32,7 @@
             .gems-transactionCategory {
                 height: 350px;
             }
-            .gems-transactionCategory button.gems-btn-add,
-            .gems-transactionCategory button.gems-btn-split {
+            .gems-transactionCategory button.gems-btn-add {
                 float: right;
             }
 
@@ -48,7 +47,12 @@
             fieldset.gems-transactionCommon  input,
             fieldset.gems-transactionCommon  button 
             {
-                width: 100%;                
+                width: 100%;
+            }
+
+            /* TODO Hack to fix non-centered button. To fix */
+            #submitButton {
+                margin-left: 5px;
             }
 
 
@@ -124,7 +128,6 @@
                                 <span>Borrower</span>
                                 <output>&nbsp;</output>                                
                                 <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
-                                <button class="btn gems-btn-split" href="#"><i class="icon-chevron-right"></i></button>                                
                             </legend>
                         </fieldset>
                     </div>
@@ -132,7 +135,16 @@
                 </div>
                 <div class="span2">
 
-                    <div style="height: 275px">
+                    <div style="height: 20px">
+                        &nbsp;
+                    </div>
+
+                    <div style="text-align: center">
+                        <button id="splitGive" class="btn" href="#"><i class="icon-chevron-left"></i> Give</button>
+                        <button id="splitTake" class="btn" href="#">Take <i class="icon-chevron-right"></i></button>
+                    </div>
+
+                    <div style="height: 235px">
                         &nbsp;
                     </div>
 
@@ -143,7 +155,6 @@
                         <!-- WARNING: HTML5 list binding only -->
                         <input type="text" id="gems-transaction-expenseList" list="expenseList" placeholder="expense tag"/>
 
-                        <br>
                         <button id="submitButton" class="btn " type="submit" onclick="sendFormData(); return false;" data-loading-text="Processing transaction...">Transact</button>
 
                     </fieldset>
@@ -158,7 +169,6 @@
                                 <span>Lender</span>
                                 <output>&nbsp;</output>                                
                                 <button class="btn gems-btn-add" href="#"><i class="icon-plus"></i></button>
-                                <button class="btn gems-btn-split" href="#"><i class="icon-chevron-left"></i></button>
                             </legend>
                         </fieldset>
                     </div>
@@ -274,8 +284,15 @@
             
             var borrowerBox = new TransactionCategory ($('#borrower'));
             var lenderBox = new TransactionCategory ($('#lender'));
-            borrowerBox.setTarget(lenderBox);
-            lenderBox.setTarget(borrowerBox);
+            
+            $("#splitTake").bind("click", {
+                self: borrowerBox,
+                target: lenderBox
+            }, onSplit);
+            $("#splitGive").bind("click", {
+                self: lenderBox,
+                target: borrowerBox
+            }, onSplit);
             
             
             $( "#gems-transaction-datepicker" ).datepicker({ dateFormat: "<%=JS_DATE_FORMAT%>"});
@@ -287,6 +304,9 @@
                 $("fieldset input").removeAttr("disabled");
             }
             
+             function onSplit(event) {
+                event.data.target.setSplitValue(event.data.self.sumVal);
+            };
             
       
             function sendFormData() {

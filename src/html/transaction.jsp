@@ -45,13 +45,14 @@
             }
 
             fieldset.gems-transactionCommon  input,
-            fieldset.gems-transactionCommon  button 
-            {
+            fieldset.gems-transactionCommon  select,
+            fieldset.gems-transactionCommon  button {
                 width: 100%;
             }
 
             /* TODO Hack to fix non-centered button. To fix */
-            #submitButton {
+            fieldset.gems-transactionCommon  select,
+            fieldset.gems-transactionCommon  button {
                 margin-left: 5px;
             }
 
@@ -152,8 +153,7 @@
 
                         <input type="text" id="gems-transaction-datepicker" value="<%=formatter.format(new java.util.Date())%>"/>
 
-                        <!-- WARNING: HTML5 list binding only -->
-                        <input type="text" id="gems-transaction-expenseList" list="expenseList" placeholder="expense tag"/>
+                        <select id="gems-transaction-expenseList" required></select>
 
                         <button id="submitButton" class="btn " type="submit" onclick="sendFormData(); return false;" data-loading-text="Processing transaction...">Transact</button>
 
@@ -273,6 +273,7 @@
 
             expenseReq.done(function(msg) {
                 $("#expenseList").html( msg );
+                $("#gems-transaction-expenseList").html( msg );
                 pageLoad++;
             });
 

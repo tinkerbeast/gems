@@ -66,7 +66,10 @@ public class InfoProvider extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
 
-            // probably bad coding using 'if's ... but practical
+            // TODO probably bad coding using 'if's ... but practical
+            
+            // Name, value pair for user list
+            // ==============================
             if (serviceCode == 1) {
                 response.setContentType("text/html;charset=UTF-8");
 
@@ -82,6 +85,9 @@ public class InfoProvider extends HttpServlet {
                 }
                 //out.println("</root>");
             }
+            
+            // Name, value pair for expense list
+            // =================================
             if (serviceCode == 2) {
                 response.setContentType("text/html;charset=UTF-8");
 
@@ -99,6 +105,7 @@ public class InfoProvider extends HttpServlet {
             }
 
             // Debitor table, Creditor table, User table
+            // =========================================
             if (serviceCode == 3) {
                 response.setContentType("text/xml;charset=UTF-8");
 
